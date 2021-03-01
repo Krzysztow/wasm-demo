@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script src="./wasmDemo.js"></script>
+<script src="./compress.js"></script>
+<script>
+  function handleFile(input) {
+    let file = input.files[0];
+    console.log("Handling file", file);
+
+    let reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+
+    reader.onload = (e) => {
+      const data = e.target.result;
+      console.log("File read, bytes", data.length);
+      compress(new Uint8Array(data));
+    };
+
+    reader.onerror = () => {
+      alert("Something went wrong while reading the file to the memory");
+    };
+  }
+
+  function compress(data) {
+    try {
+      const compressedData = Compress.doCompress(data, 2 * data.length);
+      console.log("Compression OK");
+      saveByteArray("compressed.mzip", compressedData);
+    }
+    catch(e) {
+      console.log("Failed to compress, reason: ", e.message);
+      alert("Failed to compress data:\n" + e.message);
+      return;
+    }
+  }
+
+  function saveByteArray(suggestedName, byte) {
+    var blob = new Blob([byte], {type: "application/zip"});
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = suggestedName;
+    link.click();
+  };
+</script>
+
+<h1>Drag the file</h1>
+
+<input type="file" onchange="handleFile(this)">
+
+
+</body>
+</html>
+
