@@ -2,7 +2,7 @@
 #include <numeric>
 #include <gtest/gtest.h>
 #include <fmt/ranges.h>
-#include "compressor.h"
+#include "shared/compressor.h"
 
 namespace {
 

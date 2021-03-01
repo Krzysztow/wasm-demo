@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 #include <miniz.h>
 #undef compress
-#include "compressor.h"
+#include "shared/compressor.h"
 
 namespace {
 

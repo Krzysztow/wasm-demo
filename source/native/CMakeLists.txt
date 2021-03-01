@@ -13,20 +13,6 @@ CPMAddPackage(
 )
 
 CPMAddPackage(
-  NAME miniz
-  GIT_TAG 2.1.0
-  GITHUB_REPOSITORY richgel999/miniz
-  # no cmake options available as of 2.1.0
-)
-
-CPMAddPackage(
-  NAME miniz
-  GIT_TAG 2.1.0
-  GITHUB_REPOSITORY richgel999/miniz
-  # no cmake options available as of 2.1.0
-)
-
-CPMAddPackage(
   NAME argparse
   GIT_TAG v2.0
   GITHUB_REPOSITORY p-ranav/argparse
@@ -45,12 +31,9 @@ CPMAddPackage(
 )
 
 set(headers 
-    "${PROJECT_SOURCE_DIR}/include/compressor.h")
-set(sources
-    "${CMAKE_CURRENT_SOURCE_DIR}/compressor.cpp"
+    "${PROJECT_SOURCE_DIR}/include/shared/compressor.h")
+set(sources 
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
-set(test_sources
-    "${CMAKE_CURRENT_SOURCE_DIR}/compressor.cpp")
 
 add_executable(wasmDemoNative 
     ${headers}
@@ -58,23 +41,21 @@ add_executable(wasmDemoNative
 
 add_executable(wasmDemoNativeTests 
     ${headers} 
-    ${test_sources}
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/compression_tests.cpp")
 
 # Link dependencies
 target_link_libraries(wasmDemoNative PUBLIC
     PRIVATE
       project_options
+      wasmDemoLib
       fmt::fmt
-      miniz
       argparse::argparse)
 
 target_link_libraries(wasmDemoNativeTests PUBLIC
     PRIVATE
       project_options
+      wasmDemoLib
       fmt::fmt
-      miniz
-      argparse::argparse
       gtest_main)
 
 target_include_directories(

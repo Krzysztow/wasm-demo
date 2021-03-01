@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <fmt/format.h>
 #include <argparse.hpp>
-#include "compressor.h"
+#include "shared/compressor.h"
 
 namespace {
 
