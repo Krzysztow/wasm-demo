@@ -1,2 +1,3 @@
 build*
 bin/*
+source/wasm/node_modules/*

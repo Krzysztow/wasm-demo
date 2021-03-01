@@ -8,43 +8,12 @@
 
 namespace {
 
-mz_stream constructZStream(const char* in, size_t size, char* out, size_t out_size)
-{
-  mz_stream stream;
-
-  static_assert(sizeof(unsigned char) == sizeof(char));
-  memset(&stream, 0, sizeof(stream));
-  stream.next_in = reinterpret_cast<const unsigned char*>(in);
-  stream.avail_in = size;
-  stream.next_out = reinterpret_cast<unsigned char*>(out);
-  stream.avail_out = out_size;
-
-  return stream;
-}
-
-}
-
 void printMzStatus(const char what[], int status) {
     std::cerr << "Failed to " << what <<
       " [status:" << status << ":" << mz_error(status) << "]" << std::endl;
 }
 
-template <typename F>
-bool doMzAction(const char what[], F&& f, const std::initializer_list<int>& expectedStatuses={MZ_OK})
-{
-  const auto isStatusExpected = [&](int status) {
-      return std::any_of(expectedStatuses.begin(), expectedStatuses.end(), [&](int s){return s == status;});
-  };
-
-  if (const auto status = f(); !isStatusExpected(status))
-  {
-    std::cerr << "Failed to " << what <<
-      " [status:" << status << ":" << mz_error(status) << "]" << std::endl;
-    return false;
-  }
-
-  return true;
-};
+}
 
 size_t Compressor::maxCompressedSize(size_t in_size) const
 {
@@ -86,4 +55,23 @@ size_t Compressor::decompress(const char *in, size_t size, char *out, size_t out
 
   std::cout << "Finished " << size << " bytes." << std::endl;
   return consumed_out_size;
+}
+
+extern "C" {
+
+size_t demo_compress(const char *in, size_t size, char *out, size_t out_size)
+{
+  return Compressor{}.compress(in, size, out, out_size);
+}
+
+size_t demo_decompress(const char *in, size_t size, char *out, size_t out_size)
+{
+  return Compressor{}.decompress(in, size, out, out_size);
+}
+
+size_t demo_maxCompressSize(size_t size)
+{
+  return Compressor{}.maxCompressedSize(size);
+}
+
 }

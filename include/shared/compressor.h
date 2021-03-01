@@ -9,3 +9,10 @@ public:
 };
 
 
+extern "C" {
+
+size_t demo_maxCompressSize(size_t size);
+size_t demo_compress(const char* in, size_t size, char* out, size_t out_size);
+size_t demo_decompress(const char* in, size_t size, char* out, size_t out_size);
+
+}
