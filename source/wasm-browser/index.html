@@ -44,11 +44,20 @@
     link.click();
   };
 </script>
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 
-<h1>Drag the file</h1>
-
-<input type="file" onchange="handleFile(this)">
-
+<div class="background">
+</div>
+<div class="wrapper">
+  <div>
+    <H1 style="color:white">Drop file here to compression</H1>
+  </div>
+  <div class="file-upload">
+    <input type="file" onchange="handleFile(this)"/>
+    <i class="fa fa-arrow-up"></i>
+  </div>
+</div>
 
 </body>
 </html>
