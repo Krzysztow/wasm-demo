@@ -4,12 +4,38 @@
   <head></head>
   <body>
     <script type="module">
+
       (async() => {
         const response = await fetch('add.wasm');
         const bytes = await response.arrayBuffer();
         const { instance } = await WebAssembly.instantiate(bytes);
 
+
         console.log('The answer is: ' + instance.exports.add(1, 2));
+
+
+
+        const inputBytes = new Uint8Array(10);
+        inputBytes.forEach((_, i, a) => a[i] = i);
+
+        const uint8MemView = new Uint8Array(instance.exports.memory.buffer);
+        const hb = instance.exports.__heap_base.value;
+
+        const chosenSrcStart = hb + 2;
+        uint8MemView.set(inputBytes, chosenSrcStart);
+
+        const chosenDstStart = chosenSrcStart + inputBytes.length + 5;
+        const printStart = chosenDstStart - 2;
+        const printEnd = chosenDstStart + inputBytes.length + 2;
+
+        console.log("dst before:", uint8MemView.subarray(printStart, printEnd));
+
+        instance.exports.unsafe_memcpy(chosenSrcStart, BigInt(inputBytes.length), chosenDstStart);
+
+        console.log("dst after:", uint8MemView.subarray(printStart, printEnd));
+        
+
+
       })();
     </script>
   </body>
