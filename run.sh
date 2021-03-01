@@ -2,4 +2,4 @@
 
 set -x
 
-/emsdk/upstream/bin/clang++ --target=wasm32 -Wl,--allow-undefined,--export-all,--no-entry -o add.wasm main.cpp
+emcc -g4 -s "EXPORTED_FUNCTIONS=['_main','_unsafe_memcpy','_add','_malloc']" ./main.cpp -o add.html

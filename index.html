@@ -3,52 +3,39 @@
 <html>
   <head></head>
   <body>
+    <script type="text/javascript" src="add.js"></script>   
     <script type="module">
 
       var memory = undefined;
 
-      (async() => {
-        const response = await fetch('add.wasm');
-        const bytes = await response.arrayBuffer();
-
-        const importObject = {
-          env: {
-            memcpy: (src, size, out) => {
-              const uint8MemView = new Uint8Array(memory.buffer);
-              const srcView = uint8MemView.subarray(src, src + parseInt(size));
-              const dstView = uint8MemView.subarray(out, out + parseInt(size));
-              dstView.set(srcView);
-              //dstView.forEach((v, i) => dstView[i] = 2*v);
-            },
-          }
-        };
-        const { instance } = await WebAssembly.instantiate(bytes, importObject);
-        memory = instance.exports.memory;
-
-        console.log('The answer is: ' + instance.exports.add(1, 2));
+      Module.onRuntimeInitialized = () => {
+        console.log('The answer is: ' + Module._add(1, 2));
 
         const inputBytes = new Uint8Array(10);
         inputBytes.forEach((_, i, a) => a[i] = i);
 
-        const uint8MemView = new Uint8Array(memory.buffer);
-        const hb = instance.exports.__heap_base.value;
+        try {
+          var chosenSrcStart = Module._malloc(10);
+          Module.HEAP8.set(inputBytes, chosenSrcStart);
 
-        const chosenSrcStart = hb + 2;
-        uint8MemView.set(inputBytes, chosenSrcStart);
+          var chosenDstStart = Module._malloc(5);
+          const printStart = chosenDstStart - 2;
+          const printEnd = chosenDstStart + inputBytes.length + 2;
 
-        const chosenDstStart = chosenSrcStart + inputBytes.length + 5;
-        const printStart = chosenDstStart - 2;
-        const printEnd = chosenDstStart + inputBytes.length + 2;
+          console.log("dst before:", Module.HEAP8.subarray(printStart, printEnd));
 
-        console.log("dst before:", uint8MemView.subarray(printStart, printEnd));
+          Module._unsafe_memcpy(chosenSrcStart, inputBytes.length, chosenDstStart);
 
-        instance.exports.unsafe_memcpy(chosenSrcStart, BigInt(inputBytes.length), chosenDstStart);
-
-        console.log("dst after:", uint8MemView.subarray(printStart, printEnd));
-        
-
-
-      })();
+          console.log("dst after:", Module.HEAP8.subarray(printStart, printEnd));
+        }
+        catch(e) {
+          console.error("Error:", e);
+        }
+        finally {
+          Module._free(chosenSrcStart);
+          Module._free(chosenDstStart);
+        }
+      };
     </script>
   </body>
 </html>

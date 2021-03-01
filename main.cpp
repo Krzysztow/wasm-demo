@@ -3,15 +3,13 @@ int add (int first, int second) {
   return first + second;
 }
 
-extern "C"
-void memcpy(const char* in, long long size, char* out);
+#include <stdio.h>
+#include <string.h>
 
 extern "C"
 void unsafe_memcpy(const char* in, long long size, char* out) {
-  memcpy(in, size, out);
+  memcpy(out, in, size);
 }
-
-#include <stdio.h>
 
 int main() {
   printf("Hello world!");
