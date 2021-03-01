@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+              "--reporter", "dot",
+              "--slow", "5000",
+              "--colors",
+              "${workspaceFolder}/test/*.js",
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+              "<node_internals>/**"
+            ],
+            "env": {
+                "WASM_JS_PATH": "/home/krzysztow/projects/rust-cpp/wasm/wasm-test/build-wasm/source/wasm/wasmDemo.js"
+            },
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/test/wasm-demo.js",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "env": {
+                "WASM_JS_PATH": "/home/krzysztow/projects/rust-cpp/wasm/wasm-test/build-wasm/source/wasm/wasmDemo.js"
+            },
+        }
+    ]
+}

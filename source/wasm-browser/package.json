@@ -1,0 +1,15 @@
+{
+  "name": "wasm-demo",
+  "version": "1.0.0",
+  "description": "tests for wasm-demo",
+  "main": "index.js",
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "rust&cpp meetup",
+  "license": "ISC"
+}
