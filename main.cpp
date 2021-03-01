@@ -10,3 +10,9 @@ extern "C"
 void unsafe_memcpy(const char* in, long long size, char* out) {
   memcpy(in, size, out);
 }
+
+#include <cstdio.h>
+
+int main() {
+  fprintf("Hello world!");
+}
