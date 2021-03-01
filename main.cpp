@@ -11,8 +11,8 @@ void unsafe_memcpy(const char* in, long long size, char* out) {
   memcpy(in, size, out);
 }
 
-#include <cstdio.h>
+#include <stdio.h>
 
 int main() {
-  fprintf("Hello world!");
+  printf("Hello world!");
 }
