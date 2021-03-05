@@ -1,0 +1,45 @@
+name: Wasm
+
+on: push
+
+env:
+  BUILD_ROOT: ./build-wasm
+  CMAKE_INSTALL_ROOT: /opt/cmake
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: emscripten/emsdk
+
+    steps:
+      - name: update cmake
+        run: |
+          mkdir ${{ env.CMAKE_INSTALL_ROOT }}
+          curl -fsSL https://github.com/Kitware/CMake/releases/download/v3.20.0-rc2/cmake-3.20.0-rc2-linux-x86_64.sh -o /tmp/cmake-installer.sh
+          sh /tmp/cmake-installer.sh --skip-license --prefix=${{ env.CMAKE_INSTALL_ROOT }}
+          rm -f /tmp/cmake-installer.sh 
+
+      - name: update PATH with new cmake
+        run: echo "${{ env.CMAKE_INSTALL_ROOT }}/bin" >> $GITHUB_PATH
+
+      - uses: actions/checkout@v2
+
+      - name: mkdir build directory
+        run: mkdir ${{ env.BUILD_ROOT }}
+
+      - name: configure
+        # if you want a source map to be produced, you'd use 
+        #   `emcmake cmake -DFOR_WASM=On -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS_DEBUG="-g4" ..`
+        run: emcmake cmake -DFOR_WASM=On -DCMAKE_BUILD_TYPE=RelWithDebugInfo ..
+        working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: build
+        run: VERBOSE=1 cmake --build . -- -j4
+        working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: test
+        run: |
+          cp ${{ env.BUILD_ROOT }}/source/wasm/wasmDemo.* source/wasm-browser/
+          cd source/wasm-browser
+          npm install --dev
+          npm test
