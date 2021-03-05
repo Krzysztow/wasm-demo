@@ -1,0 +1,44 @@
+name: Native
+
+on: push
+
+env:
+  BUILD_ROOT: ./build-native
+  CXX: g++-10
+  CC: gcc-10
+  ARTIFACTS_DIR: ./wasm-demo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: mkdir build directory
+        run: mkdir ${{ env.BUILD_ROOT }}
+
+      - name: configure
+        run: cmake -DFOR_NATIVE=On ..
+        working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: build
+        run: VERBOSE=1 cmake --build . -- -j4
+        working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: test
+        run: |
+          cd source/native
+          ctest --verbose .
+        working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: prepare artifacts directory
+        run: |
+          mkdir ${{ env.ARTIFACTS_DIR }}
+          cp ${{ env.BUILD_ROOT }}/source/native/wasmDemoNative ${{ env.ARTIFACTS_DIR }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: native-wasmdemo
+          path: ${{ env.ARTIFACTS_DIR }}/*
+          if-no-files-found: error
