@@ -26,4 +26,15 @@ emcmake cmake -DFOR_WASM=On <source-root>`
 cmake --build .
 ```
 
-Note: There's a (not-yet-working) `feature/CI` branch with the build steps documenting this process.
+### Github actions:
+The build steps are documented in `.github/workflows/*yml` files. These produce usable artifacts.
+
+E.g. if you want to test WASM without performing the build yourself
+* download the artifact to your working directory
+* execute following commands in your working directory:
+```
+mkdir http && cd http
+unzip ../wasm-wasmdemo.zip
+python3 -m http.server 
+```
+* now, you'll be able to open your browser at http://localhost:8000/ and use the tool!
