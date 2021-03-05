@@ -10,7 +10,7 @@ set(sources
 add_executable(wasmDemo ${headers} ${sources})
 # NOTE: make sure we put no spaces in the -sEXPORTED_FUNCTIONS=['_main'...]
 target_link_options(wasmDemo PRIVATE -sEXPORTED_FUNCTIONS=['_main','_demo_compress','_demo_decompress','_demo_maxCompressSize']) 
-target_link_options(wasmDemo PRIVATE -sEXPORTED_RUNTIME_METHODS=['ccall']) 
+target_link_options(wasmDemo PRIVATE -sEXPORTED_RUNTIME_METHODS=['malloc','free']) 
 
 # Link dependencies
 target_link_libraries(wasmDemo PUBLIC
