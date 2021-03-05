@@ -5,6 +5,7 @@ on: push
 env:
   BUILD_ROOT: ./build-wasm
   CMAKE_INSTALL_ROOT: /opt/cmake
+  ARTIFACTS_DIR: ./wasm-demo
 
 jobs:
   build:
@@ -43,3 +44,18 @@ jobs:
           cd source/wasm-browser
           npm install --dev
           npm test
+
+      - name: prepare artifacts directory
+        run: |
+          mkdir ${{ env.ARTIFACTS_DIR }}
+          cp ${{ env.BUILD_ROOT }}/source/wasm/wasmDemo.* ${{ env.ARTIFACTS_DIR }}
+          cp source/wasm-browser/compress.js ${{ env.ARTIFACTS_DIR }}
+          cp source/wasm-browser/index.html ${{ env.ARTIFACTS_DIR }}
+          cp source/wasm-browser/style.css ${{ env.ARTIFACTS_DIR }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-wasmdemo
+          path: ${{ env.ARTIFACTS_DIR }}/*
+          if-no-files-found: error
+        

@@ -6,6 +6,7 @@ env:
   BUILD_ROOT: ./build-native
   CXX: g++-10
   CC: gcc-10
+  ARTIFACTS_DIR: ./wasm-demo
 
 jobs:
   build:
@@ -30,3 +31,14 @@ jobs:
           cd source/native
           ctest --verbose .
         working-directory: ${{ env.BUILD_ROOT }}
+
+      - name: prepare artifacts directory
+        run: |
+          mkdir ${{ env.ARTIFACTS_DIR }}
+          cp ${{ env.BUILD_ROOT }}/source/native/wasmDemoNative ${{ env.ARTIFACTS_DIR }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: native-wasmdemo
+          path: ${{ env.ARTIFACTS_DIR }}/*
+          if-no-files-found: error
